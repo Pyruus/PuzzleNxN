@@ -8,14 +8,14 @@ Board::Board(int n) : gridSize(n), tiles() {
 }
 
 void Board::initialize() {
-  for (int i = 0; i < gridSize * gridSize - 1; i++) {
+  for (int i = 0; i < gridSize * gridSize; i++) {
     auto tile = new Tile();
-    if (i < gridSize * gridSize - 1) {
-        tile->setValue( i + 1);
-    }
+    tile->setValue( i );
 
     tiles.push_back(tile);
   }
+
+  shuffle();
 }
 
 void Board::shuffle() {
@@ -69,4 +69,12 @@ int Board::getInversionCount(const std::vector<int>& puzzle){
     }
   }
   return invCount;
+}
+
+int Board::getGridSize(){
+    return gridSize;
+}
+
+std::vector<Tile*> Board::getTiles(){
+    return tiles;
 }

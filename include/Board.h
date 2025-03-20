@@ -19,6 +19,10 @@ public:
     void initialize();
 
     void shuffle();
+
+    int getGridSize();
+
+    std::vector<Tile*> getTiles();
 };
 
 #endif // BOARD_H
