@@ -1,5 +1,7 @@
 #include "../include/Tile.h"
 
+Tile::Tile(int val) : value(val){}
+
 int Tile::getValue() const {
     return value;
 }
