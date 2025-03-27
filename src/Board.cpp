@@ -3,78 +3,120 @@
 #include <algorithm>
 #include <random>
 
-Board::Board(int n) : gridSize(n), tiles() {
-    initialize();
+Board::Board(int size) : size(size) {
+    tiles.resize(size, std::vector<Tile>(size));
+    int value = 1;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (value < size * size) {
+                tiles[i][j] = Tile(value++, i, j);
+            } else {
+                tiles[i][j] = Tile(0, i, j);
+            }
+        }
+    }
 }
 
-void Board::initialize() {
-  for (int i = 0; i < gridSize * gridSize; i++) {
-    auto tile = new Tile();
-    tile->setValue( i );
+Tile Board::getTile(int x, int y) const {
+    return tiles[x][y];
+}
 
-    tiles.push_back(tile);
-  }
+bool Board::moveTile(MoveDirection direction) {
+    int emptyX = -1, emptyY = -1;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (tiles[i][j].getValue() == 0) {
+                emptyX = i;
+                emptyY = j;
+                break;
+            }
+        }
+    }
 
-  shuffle();
+    int newX = emptyX, newY = emptyY;
+    switch (direction) {
+    case MoveDirection::UP: newX++; break;
+    case MoveDirection::DOWN: newX--; break;
+    case MoveDirection::LEFT: newY++; break;
+    case MoveDirection::RIGHT: newY--; break;
+    }
+
+    if (newX >= 0 && newX < size && newY >= 0 && newY < size) {
+        std::swap(tiles[emptyX][emptyY], tiles[newX][newY]);
+        tiles[emptyX][emptyY].setX(emptyX);
+        tiles[emptyX][emptyY].setY(emptyY);
+        tiles[newX][newY].setX(newX);
+        tiles[newX][newY].setY(newY);
+        return true;
+    }
+    return false;
 }
 
 void Board::shuffle() {
-  std::vector<int> values;
-  for (int i = 0; i < gridSize * gridSize - 1; ++i) {
-    values.push_back(i + 1);
-  }
-  values.push_back(0);
+    std::vector<int> values(size * size);
+    for (int i = 0; i < size * size - 1; ++i) {
+        values[i] = i + 1;
+    }
+    values[size * size - 1] = 0;
 
-  std::random_device rd;
-  std::mt19937 g(rd());
-
-  do {
+    std::random_device rd;
+    std::mt19937 g(rd());
     std::shuffle(values.begin(), values.end(), g);
-  } while (!isSolvable(values));
 
-  for (int i = 0; i < gridSize * gridSize; ++i) {
-    tiles[i]->setValue( values[i] );
-  }
+    int k = 0;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            tiles[i][j] = Tile(values[k++], i, j);
+        }
+    }
 }
 
-bool Board::isSolvable(const std::vector<int>& puzzle){
-  int invCount = getInversionCount(puzzle);
-  if (gridSize % 2 == 0){
-    return invCount % 2 == 0;
-  } else {
-    int emptyRow = 0;
-    for (int i = 0; i < puzzle.size(); i++) {
-      if (puzzle[i] == 0){
-        emptyRow = i / gridSize;
-        break;
-      }
+int Board::getSize() const {
+    return size;
+}
+
+bool Board::isSolved() const {
+    int value = 1;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (tiles[i][j].getValue() != value && value < size * size) {
+                return false;
+            }
+            value++;
+        }
+    }
+    return true;
+}
+
+bool Board::isSolvable() const {
+    std::vector<int> flattenedBoard;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            flattenedBoard.push_back(tiles[i][j].getValue());
+        }
     }
 
-    int rowFromBottom = gridSize - emptyRow;
-    return (invCount + rowFromBottom) % 2 == 1;
-  }
-}
-
-int Board::getInversionCount(const std::vector<int>& puzzle){
-  int invCount = 0;
-  for (int i = 0; i < puzzle.size() - 1; i++) {
-    if (puzzle[i] == 0) continue;
-
-    for (int j = i + 1; j < puzzle.size(); j++) {
-      if (puzzle[j] == 0) continue;
-
-      if (puzzle[i] > puzzle[j]) {
-        invCount++;
-      }
+    int inversions = 0;
+    for (size_t i = 0; i < flattenedBoard.size(); ++i) {
+        for (size_t j = i + 1; j < flattenedBoard.size(); ++j) {
+            if (flattenedBoard[i] != 0 && flattenedBoard[j] != 0 && flattenedBoard[i] > flattenedBoard[j]) {
+                inversions++;
+            }
+        }
     }
-  }
-  return invCount;
-}
 
-int Board::getGridSize(){
-    return gridSize;
-}
-
-std::vector<Tile*> Board::getTiles(){
-    return tiles;
+    if (size % 2 == 1) {
+        return inversions % 2 == 0;
+    } else {
+        int emptyRow = 0;
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                if (tiles[i][j].getValue() == 0) {
+                    emptyRow = size - i;
+                    break;
+                }
+            }
+        }
+        return (inversions + emptyRow) % 2 == 0;
+    }
 }

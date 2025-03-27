@@ -2,27 +2,22 @@
 #define BOARD_H
 
 #include <vector>
-#include "Tile.h"
 #include "MoveDirection.h"
+#include "Tile.h"
 
 class Board {
 private:
-    int gridSize;
-    std::vector<Tile*> tiles;
-
-    bool isSolvable(const std::vector<int>& puzzle);
-    int getInversionCount(const std::vector<int>& puzzle);
+    int size;
+    std::vector<std::vector<Tile>> tiles;
 
 public:
-    Board(int n);
-
-    void initialize();
-
+    Board(int size);
+    Tile getTile(int x, int y) const;
+    bool moveTile(MoveDirection direction);
     void shuffle();
-
-    int getGridSize();
-
-    std::vector<Tile*> getTiles();
+    int getSize() const;
+    bool isSolved() const;
+    bool isSolvable() const;
 };
 
 #endif // BOARD_H

@@ -4,15 +4,17 @@
 class Tile {
 private:
     int value;
+    int x;
+    int y;
 
 public:
-    Tile(int val = 0);
-
+    Tile(int value, int x, int y);
     int getValue() const;
-
-    void setValue(int val);
-
-    bool isEmpty() const;
+    int getX() const;
+    int getY() const;
+    void setValue(int value);
+    void setX(int x);
+    void setY(int y);
 };
 
 #endif // TILE_H
