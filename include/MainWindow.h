@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "Board.h"
+#include "PuzzleModel.h"
+#include "BoardView.h"
+#include "ControlPanel.h"
 
 #include <QComboBox>
 #include <QLabel>
@@ -14,21 +16,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(int size = 4, QWidget *parent = nullptr);
-    ~MainWindow();
+    MainWindow(int size, QWidget *parent = nullptr);
 
 private:
-    void setupUI();
-    void createPuzzle();
-
-    QWidget *centralWidget;
-    QVBoxLayout *mainLayout;
-    QGridLayout *gridLayout;
-    QHBoxLayout *buttonLayout;
-    QLabel *moveCountLabel;
-    QPushButton *newGameButton;
-    QComboBox *sizeComboBox;
-
-    Board* board;
+    PuzzleModel puzzleModel;
+    BoardView *boardView;
+    ControlPanel *controlPanel;
+    QComboBox *boardSizeComboBox;
 };
 #endif // MAINWINDOW_H
