@@ -8,6 +8,7 @@ private:
     int y;
 
 public:
+    Tile();
     Tile(int value, int x, int y);
     int getValue() const;
     int getX() const;
