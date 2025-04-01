@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QTimer>
 
 class MainWindow : public QMainWindow
 {
@@ -25,5 +26,10 @@ private:
     ControlPanel *controlPanel;
     QComboBox *boardSizeComboBox;
     StatisticsView *statisticsView;
+    QTimer *timer;
+    int elapsedTime = 0;
+
+private slots:
+    void updateTime();
 };
 #endif // MAINWINDOW_H

@@ -63,6 +63,9 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
         connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
 
+        elapsedTime = -1;
+        timer->start(1000);
+        updateTime();
     });
 
     connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
@@ -89,4 +92,16 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     connect(&puzzleModel, &PuzzleModel::boardChanged, boardView, &BoardView::updateBoard);
     connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
     connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);
+    timer->start(1000);
+}
+
+void MainWindow::updateTime() {
+    elapsedTime++;
+    int hours = elapsedTime / 3600;
+    int minutes = (elapsedTime % 3600) / 60;
+    int seconds = elapsedTime % 60;
+    statisticsView->updateTime(hours, minutes, seconds);
 }
