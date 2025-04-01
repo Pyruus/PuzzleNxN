@@ -18,6 +18,7 @@ signals:
 
 private:
     QLabel *label;
+    void setOpacity(qreal opacity);
 };
 
 #endif // TILEVIEW_H
