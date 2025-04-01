@@ -4,6 +4,7 @@
 #include "PuzzleModel.h"
 #include "BoardView.h"
 #include "ControlPanel.h"
+#include "StatisticsView.h"
 
 #include <QComboBox>
 #include <QLabel>
@@ -23,5 +24,6 @@ private:
     BoardView *boardView;
     ControlPanel *controlPanel;
     QComboBox *boardSizeComboBox;
+    StatisticsView *statisticsView;
 };
 #endif // MAINWINDOW_H

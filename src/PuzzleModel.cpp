@@ -1,6 +1,6 @@
 #include "../include/PuzzleModel.h"
 
-PuzzleModel::PuzzleModel(int size, QObject *parent) : QObject(parent), board(size){
+PuzzleModel::PuzzleModel(int size, QObject *parent) : QObject(parent), board(size), moveCount(0){
     shuffle();
 }
 
@@ -18,7 +18,9 @@ bool PuzzleModel::isSolvable() const {
 
 void PuzzleModel::moveTile(MoveDirection direction) {
     if (board.moveTile(direction)) {
+        moveCount++;
         emit boardChanged(board);
+        emit moveCountChanged(moveCount);
         if (isSolved()) {
             emit gameSolved();
         }
@@ -28,4 +30,9 @@ void PuzzleModel::moveTile(MoveDirection direction) {
 void PuzzleModel::shuffle() {
     board.shuffle();
     emit boardChanged(board);
+    emit moveCountChanged(moveCount);
+}
+
+int PuzzleModel::getMoveCount() const {
+    return moveCount;
 }

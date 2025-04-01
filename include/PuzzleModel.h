@@ -13,6 +13,7 @@ public:
     Board getBoard() const;
     bool isSolved() const;
     bool isSolvable() const;
+    int getMoveCount() const;
 
 public slots:
     void moveTile(MoveDirection direction);
@@ -25,6 +26,7 @@ signals:
 
 private:
     Board board;
+    int moveCount;
 };
 
 #endif // PUZZLEMODEL_H

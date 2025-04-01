@@ -8,6 +8,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
 
     boardView = new BoardView(puzzleModel.getBoard(), this);
     controlPanel = new ControlPanel(this);
+    statisticsView = new StatisticsView(this);
 
     QPushButton *newGameButton = new QPushButton("New Game", this);
     QLabel *boardSizeLabel = new QLabel("Board size", this);
@@ -21,6 +22,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     layout->addWidget(newGameButton, 0, 1, 1, 1);
     layout->addWidget(boardSizeLabel, 1, 1, 1, 1);
     layout->addWidget(boardSizeComboBox, 2, 1, 1, 1);
+    layout->addWidget(statisticsView, 3, 1, 1, 1);
 
     connect(newGameButton, &QPushButton::clicked, [this, layout](){
         int newSize = boardSizeComboBox->currentText().left(1).toInt();
@@ -28,6 +30,9 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         puzzleModel.~PuzzleModel();
 
         new (&puzzleModel) PuzzleModel(newSize, this);
+
+        puzzleModel.shuffle();
+        statisticsView->updateMoveCount(0);
 
         delete boardView;
         boardView = new BoardView(puzzleModel.getBoard(), this);
@@ -55,6 +60,9 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         });
 
         connect(&puzzleModel, &PuzzleModel::boardChanged, boardView, &BoardView::updateBoard);
+        connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
+        connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
+
     });
 
     connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
@@ -79,4 +87,6 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     });
 
     connect(&puzzleModel, &PuzzleModel::boardChanged, boardView, &BoardView::updateBoard);
+    connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
+    connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
 }
