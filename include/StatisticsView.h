@@ -10,12 +10,10 @@ class StatisticsView : public QWidget {
 public:
     StatisticsView(QWidget *parent = nullptr);
     void updateMoveCount(int moveCount);
-    void displayMessage(const QString &message);
     void updateTime(int hours, int minutes, int seconds);
 
 private:
     QLabel *moveCountLabel;
-    QLabel *messageLabel;
     QLabel *timeLabel;
 };
 

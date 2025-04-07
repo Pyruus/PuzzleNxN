@@ -39,6 +39,9 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         layout->addWidget(boardView, 0, 0, 1, 1);
 
         connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
+            if (gameFinished) {
+                return;
+            }
             Board board = puzzleModel.getBoard();
             int emptyX = -1, emptyY = -1;
             for (int i = 0; i < board.getSize(); ++i) {
@@ -61,7 +64,22 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
 
         connect(&puzzleModel, &PuzzleModel::boardChanged, boardView, &BoardView::updateBoard);
         connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
-        connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
+        connect(&puzzleModel, &PuzzleModel::gameSolved, this, [&](){
+            gameFinished = true;
+            timer->stop();
+
+            int hours = elapsedTime / 3600;
+            int minutes = (elapsedTime % 3600) / 60;
+            int seconds = elapsedTime % 60;
+            QString timeString = QString("Your time: %1:%2:%3").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0'));
+
+            QString movesString = QString("Moves %1").arg(puzzleModel.getMoveCount());
+
+            QString message = QString("Congratulations! You solved the puzzle.\n%1\n%2").arg(timeString, movesString);
+
+            QMessageBox::information(this, "Puzzle solved!", message);
+        });
+
 
         elapsedTime = -1;
         timer->start(1000);
@@ -69,6 +87,9 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     });
 
     connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
+        if (gameFinished) {
+            return;
+        }
         Board board = puzzleModel.getBoard();
         int emptyX = -1, emptyY = -1;
         for (int i = 0; i < board.getSize(); ++i) {
@@ -91,7 +112,22 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
 
     connect(&puzzleModel, &PuzzleModel::boardChanged, boardView, &BoardView::updateBoard);
     connect(&puzzleModel, &PuzzleModel::moveCountChanged, statisticsView, &StatisticsView::updateMoveCount);
-    connect(&puzzleModel, &PuzzleModel::gameSolved, [&](){ statisticsView->displayMessage("Gra rozwiązana!"); });
+    connect(&puzzleModel, &PuzzleModel::gameSolved, this, [&](){
+        gameFinished = true;
+        timer->stop();
+
+        int hours = elapsedTime / 3600;
+        int minutes = (elapsedTime % 3600) / 60;
+        int seconds = elapsedTime % 60;
+        QString timeString = QString("Your time: %1:%2:%3").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0'));
+
+        QString movesString = QString("Moves %1").arg(puzzleModel.getMoveCount());
+
+        QString message = QString("Congratulations! You solved the puzzle.\n%1\n%2").arg(timeString, movesString);
+
+        QMessageBox::information(this, "Puzzle solved!", message);
+    });
+
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);

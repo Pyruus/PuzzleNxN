@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QMessageBox>
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +29,7 @@ private:
     StatisticsView *statisticsView;
     QTimer *timer;
     int elapsedTime = 0;
+    bool gameFinished = false;
 
 private slots:
     void updateTime();
