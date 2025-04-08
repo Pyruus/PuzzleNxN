@@ -39,6 +39,8 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     layout->addWidget(statisticsView, 3, 1, 1, 1);
 
     connect(newGameButton, &QPushButton::clicked, [this, layout](){
+        this->gameFinished = false;
+
         int newSize = boardSizeComboBox->currentText().left(1).toInt();
 
         puzzleModel.~PuzzleModel();
