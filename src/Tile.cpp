@@ -27,3 +27,15 @@ void Tile::setX(int x) {
 void Tile::setY(int y) {
     this->y = y;
 }
+
+bool Tile::operator==(const Tile& other) const {
+    return value == other.value;
+}
+
+bool Tile::operator!=(const Tile& other) const {
+    return value != other.value;
+}
+
+bool Tile::operator<(const Tile& other) const {
+    return value < other.value;
+}

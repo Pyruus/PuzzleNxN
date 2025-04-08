@@ -18,6 +18,7 @@ public:
     int getSize() const;
     bool isSolved() const;
     bool isSolvable() const;
+    bool operator<(const Board& other) const;
 };
 
 #endif // BOARD_H

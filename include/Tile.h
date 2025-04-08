@@ -16,6 +16,9 @@ public:
     void setValue(int value);
     void setX(int x);
     void setY(int y);
+    bool operator==(const Tile& other) const;
+    bool operator!=(const Tile& other) const;
+    bool operator<(const Tile& other) const;
 };
 
 #endif // TILE_H

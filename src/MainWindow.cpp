@@ -1,5 +1,19 @@
 #include "../include/MainWindow.h"
 
+#include <QThread>
+
+AlgorithmWorker::AlgorithmWorker(Board initialBoard) : initialBoard(initialBoard) {}
+
+void AlgorithmWorker::runAStar() {
+    aStarResult = aStarSolver.solve(initialBoard);
+    emit finished(aStarResult, idaStarResult);
+}
+
+void AlgorithmWorker::runIDAStar() {
+    idaStarResult = idaStarSolver.solve(initialBoard);
+    emit finished(aStarResult, idaStarResult);
+}
+
 MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleModel(size) {
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -84,6 +98,16 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         elapsedTime = -1;
         timer->start(1000);
         updateTime();
+
+        QThread* thread = new QThread;
+        AlgorithmWorker* worker = new AlgorithmWorker(puzzleModel.getBoard());
+        worker->moveToThread(thread);
+        connect(worker, &AlgorithmWorker::finished, this, &MainWindow::displaySolutions);
+        connect(worker, &AlgorithmWorker::finished, worker, &QObject::deleteLater);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+        //connect(thread, &QThread::started, worker, &AlgorithmWorker::runAStar); // Możesz uruchomić oba sekwencyjnie lub równolegle
+        connect(thread, &QThread::started, worker, &AlgorithmWorker::runIDAStar);
+        thread->start();
     });
 
     connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
@@ -140,4 +164,38 @@ void MainWindow::updateTime() {
     int minutes = (elapsedTime % 3600) / 60;
     int seconds = elapsedTime % 60;
     statisticsView->updateTime(hours, minutes, seconds);
+}
+
+std::string moveToString(MoveDirection move) {
+    switch (move) {
+    case MoveDirection::UP: return "UP";
+    case MoveDirection::DOWN: return "DOWN";
+    case MoveDirection::LEFT: return "LEFT";
+    case MoveDirection::RIGHT: return "RIGHT";
+    default: return "";
+    }
+}
+
+void MainWindow::displaySolutions(std::vector<MoveDirection> aStarMoves, std::vector<MoveDirection> idaStarMoves) {
+    QString aStarSolution = "A* Solution: ";
+    for (const auto& move : aStarMoves) {
+        aStarSolution += QString::fromStdString(moveToString(move)) + " ";
+    }
+
+    QString idaStarSolution = "IDA* Solution: ";
+    for (const auto& move : idaStarMoves) {
+        idaStarSolution += QString::fromStdString(moveToString(move)) + " ";
+    }
+
+    QString solutionsText = "Solutions (will disappear in 5 seconds):\n\nA*: " + aStarSolution + "\nIDA*: " + idaStarSolution;
+
+    solutionsDialog = new QDialog(this);
+    solutionsDialog->setWindowTitle("Solution Hints");
+    QVBoxLayout* dialogLayout = new QVBoxLayout(solutionsDialog);
+    QLabel* solutionsLabel = new QLabel(solutionsText, solutionsDialog);
+    solutionsLabel->setAlignment(Qt::AlignLeft);
+    dialogLayout->addWidget(solutionsLabel);
+    solutionsDialog->setLayout(dialogLayout);
+    solutionsDialog->setModal(false); // Nie blokuj interakcji z głównym oknem
+    solutionsDialog->show();
 }

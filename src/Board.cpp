@@ -120,3 +120,10 @@ bool Board::isSolvable() const {
         return (inversions + emptyRow) % 2 == 0;
     }
 }
+
+bool Board::operator<(const Board& other) const {
+    if (size != other.size) {
+        return size < other.size;
+    }
+    return tiles < other.tiles;
+}
