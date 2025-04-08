@@ -53,22 +53,24 @@ bool Board::moveTile(MoveDirection direction) {
 }
 
 void Board::shuffle() {
-    std::vector<int> values(size * size);
-    for (int i = 0; i < size * size - 1; ++i) {
-        values[i] = i + 1;
-    }
-    values[size * size - 1] = 0;
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(values.begin(), values.end(), g);
-
-    int k = 0;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            tiles[i][j] = Tile(values[k++], i, j);
+    do{
+        std::vector<int> values(size * size);
+        for (int i = 0; i < size * size - 1; ++i) {
+            values[i] = i + 1;
         }
-    }
+        values[size * size - 1] = 0;
+
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(values.begin(), values.end(), g);
+
+        int k = 0;
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                tiles[i][j] = Tile(values[k++], i, j);
+            }
+        }
+    }while (!isSolvable());
 }
 
 int Board::getSize() const {
@@ -90,33 +92,33 @@ bool Board::isSolved() const {
 
 bool Board::isSolvable() const {
     std::vector<int> flattenedBoard;
+    int inversions = 0;
+    int blank_row = -1;
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
             flattenedBoard.push_back(tiles[i][j].getValue());
+            if (tiles[i][j].getValue() == 0){
+                blank_row = i;
+            }
         }
     }
 
-    int inversions = 0;
-    for (size_t i = 0; i < flattenedBoard.size(); ++i) {
-        for (size_t j = i + 1; j < flattenedBoard.size(); ++j) {
-            if (flattenedBoard[i] != 0 && flattenedBoard[j] != 0 && flattenedBoard[i] > flattenedBoard[j]) {
+    for (int i = 0; i < size * size; ++i) {
+        if (flattenedBoard[i] == 0){
+            continue;
+        }
+        for (int j = i + 1; j < size * size; ++j) {
+            if (flattenedBoard[j] != 0 && flattenedBoard[i] > flattenedBoard[j]) {
                 inversions++;
             }
         }
     }
 
     if (size % 2 == 1) {
-        return inversions % 2 == 0;
+        return (inversions % 2 == 0);
     } else {
-        int emptyRow = 0;
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if (tiles[i][j].getValue() == 0) {
-                    emptyRow = size - i;
-                    break;
-                }
-            }
-        }
-        return (inversions + emptyRow) % 2 == 0;
+        int blankRowFromBottom = size - 1 - blank_row;
+        return ((inversions % 2 == 0) && (blankRowFromBottom % 2 == 0)) ||
+               ((inversions % 2 != 0) && (blankRowFromBottom % 2 != 0));
     }
 }
