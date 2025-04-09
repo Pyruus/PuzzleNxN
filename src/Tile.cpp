@@ -1,4 +1,4 @@
-#include "../include/Tile.h"
+#include "Tile.h"
 
 Tile::Tile() : value(0), x(0), y(0) {}
 

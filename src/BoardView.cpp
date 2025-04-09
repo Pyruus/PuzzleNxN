@@ -1,4 +1,4 @@
-#include "../include/BoardView.h"
+#include "BoardView.h"
 #include <QGridLayout>
 
 BoardView::BoardView(const Board &board, QWidget *parent) : QWidget(parent), size(board.getSize()) {

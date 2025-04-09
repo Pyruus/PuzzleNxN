@@ -1,4 +1,4 @@
-#include "../include/PuzzleModel.h"
+#include "PuzzleModel.h"
 
 PuzzleModel::PuzzleModel(int size, QObject *parent) : QObject(parent), board(size), moveCount(0){
     shuffle();

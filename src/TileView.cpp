@@ -1,4 +1,4 @@
-#include "../include/TileView.h"
+#include "TileView.h"
 #include <QGraphicsOpacityEffect>
 #include <QGridLayout>
 

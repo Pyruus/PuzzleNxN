@@ -1,4 +1,4 @@
-#include "../include/StatisticsView.h"
+#include "StatisticsView.h"
 #include <QGridLayout>
 
 StatisticsView::StatisticsView(QWidget *parent) : QWidget(parent) {
