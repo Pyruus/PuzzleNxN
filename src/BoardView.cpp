@@ -8,7 +8,7 @@ BoardView::BoardView(const Board &board, QWidget *parent) : QWidget(parent), siz
     tileViews.resize(size, std::vector<TileView*>(size));
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
-            tileViews[i][j] = new TileView(board.getTile(i, j), this);
+            tileViews[i][j] = new TileView(board.getTile(i, j), this, board.getSize());
             layout->addWidget(tileViews[i][j], i, j);
             connect(tileViews[i][j], &TileView::clicked, [this, i, j](){ emit tileClicked(i, j); });
         }

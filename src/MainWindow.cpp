@@ -25,7 +25,50 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     boardSizeComboBox->addItem("6x6");
     boardSizeComboBox->addItem("7x7");
     boardSizeComboBox->addItem("8x8");
+    boardSizeComboBox->addItem("9x9");
+    boardSizeComboBox->addItem("10x10");
+    boardSizeComboBox->addItem("15x15");
     boardSizeComboBox->setCurrentText(QString::number(size) + "x" + QString::number(size));
+
+    QString buttonStyle = "QPushButton {"
+                          "    background-color: #4d80e4;"
+                          "    background-image: linear-gradient(to bottom, #6699ff, #4d80e4);"
+                          "    color: white;"
+                          "    border: 1px solid #336699;"
+                          "    border-radius: 8px;"
+                          "    padding: 10px 20px;"
+                          "    font-size: 16px;"
+                          "    cursor: pointer;"
+                          "    width: 150px;"
+                          "}"
+                          "QPushButton:hover {"
+                          "    background-color: #5e99f2;"
+                          "    background-image: linear-gradient(to bottom, #7ab2ff, #5e99f2);"
+                          "    border-color: #29527a; "
+                          "}";
+
+    newGameButton->setStyleSheet(buttonStyle);
+    saveGameButton->setStyleSheet(buttonStyle);
+    loadGameButton->setStyleSheet(buttonStyle);
+
+    QString comboBoxStyle = "QComboBox {"
+                            "    background-color: white;"
+                            "    color: black;"
+                            "    border: 1px solid #c0c0c0;"
+                            "    border-radius: 5px;"
+                            "    padding: 5px 10px;"
+                            "    font-size: 14px;"
+                            "}"
+                            "QComboBox::drop-down {"
+                            "    width: 20px;"
+                            "}"
+                            "QComboBox QAbstractItemView {"
+                            "    border: 1px solid #c0c0c0;"
+                            "    selection-background-color: #4d80e4;"
+                            "    selection-color: white;"
+                            "}";
+
+    boardSizeComboBox->setStyleSheet(comboBoxStyle);
 
     layout->addWidget(boardView, 0, 0, -1, 1);
 
@@ -41,7 +84,6 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     layout->addWidget(boardSizeComboBox, startRow + 4, rightColumn, 1, 1);
     layout->addWidget(statisticsView, startRow + 5, rightColumn, 1, 1);
 
-    // Dodaj spacer za grupą elementów
     layout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding), startRow + 6, rightColumn, -1, 1);
 
     centralWidget->setLayout(layout);
@@ -57,7 +99,8 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     connect(newGameButton, &QPushButton::clicked, [this, layout](){
         this->gameFinished = false;
 
-        int newSize = boardSizeComboBox->currentText().left(1).toInt();
+        int xPosition = boardSizeComboBox->currentText().indexOf('x');
+        int newSize = boardSizeComboBox->currentText().left(xPosition).toInt();
 
         puzzleModel.~PuzzleModel();
 
