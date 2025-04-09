@@ -10,10 +10,12 @@ class PuzzleModel : public QObject {
 
 public:
     PuzzleModel(int size, QObject *parent = nullptr);
-    Board getBoard() const;
+    Board& getBoard();
     bool isSolved() const;
     bool isSolvable() const;
     int getMoveCount() const;
+    void setBoard(const Board& board);
+    void setMoveCount(int count);
 
 public slots:
     void moveTile(MoveDirection direction);

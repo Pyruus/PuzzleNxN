@@ -4,7 +4,7 @@ PuzzleModel::PuzzleModel(int size, QObject *parent) : QObject(parent), board(siz
     shuffle();
 }
 
-Board PuzzleModel::getBoard() const {
+Board& PuzzleModel::getBoard() {
     return board;
 }
 
@@ -36,3 +36,16 @@ void PuzzleModel::shuffle() {
 int PuzzleModel::getMoveCount() const {
     return moveCount;
 }
+
+void PuzzleModel::setBoard(const Board& board) {
+    this->board = board;
+    emit boardChanged(this->board);
+}
+
+void PuzzleModel::setMoveCount(int count) {
+    if (this->moveCount != count) {
+        this->moveCount = count;
+        emit moveCountChanged(this->moveCount);
+    }
+}
+

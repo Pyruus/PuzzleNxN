@@ -122,3 +122,13 @@ bool Board::isSolvable() const {
                ((inversions % 2 != 0) && (blankRowFromBottom % 2 != 0));
     }
 }
+
+std::vector<std::vector<Tile>> Board::getTiles() const{
+    return tiles;
+}
+
+void Board::setTileValue(int row, int col, int value) {
+    if (row >= 0 && row < size && col >= 0 && col < size) {
+        tiles[row][col].setValue(value);
+    }
+}

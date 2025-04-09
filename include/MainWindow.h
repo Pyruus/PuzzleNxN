@@ -33,5 +33,7 @@ private:
 
 private slots:
     void updateTime();
+    void saveGame();
+    void loadGame();
 };
 #endif // MAINWINDOW_H
