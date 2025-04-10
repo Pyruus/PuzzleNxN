@@ -22,16 +22,6 @@
  * shuffling, and checking the solution state.
  */
 class Board {
-private:
-    /*!
-     * @brief The size of the board (number of rows and columns).
-     */
-    int size;
-
-    /*!
-     * @brief A two-dimensional vector structure storing the tiles of the board.
-     */
-    std::vector<std::vector<Tile>> tiles;
 
 public:
     /*!
@@ -91,6 +81,17 @@ public:
      * @param value The new value of the tile.
      */
     void setTileValue(int row, int col, int value);
+
+private:
+    /*!
+     * @brief The size of the board (number of rows and columns).
+     */
+    int size;
+
+    /*!
+     * @brief A two-dimensional vector structure storing the tiles of the board.
+     */
+    std::vector<std::vector<Tile>> tiles;
 };
 
 #endif // BOARD_H

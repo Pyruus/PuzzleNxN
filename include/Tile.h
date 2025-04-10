@@ -18,16 +18,6 @@
  * on the board. The value 0 represents the empty tile.
  */
 class Tile {
-private:
-    /*!
-     * @brief The value displayed on the tile. 0 indicates the empty tile.
-     */
-    int value;
-
-    /*!
-     * @brief The current position of the tile on the board.
-     */
-    Coordinates<int> position;
 
 public:
     /*!
@@ -80,6 +70,17 @@ public:
      * @param y The new column index for the tile.
      */
     void setY(int y);
+
+private:
+    /*!
+     * @brief The value displayed on the tile. 0 indicates the empty tile.
+     */
+    int value;
+
+    /*!
+     * @brief The current position of the tile on the board.
+     */
+    Coordinates<int> position;
 };
 
 #endif // TILE_H
