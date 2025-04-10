@@ -16,6 +16,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     QPushButton *newGameButton = new QPushButton("New Game", this);
     QPushButton *saveGameButton = new QPushButton("Save Game", this);
     QPushButton *loadGameButton = new QPushButton("Load Game", this);
+    QPushButton *closeGameButton = new QPushButton("Quit", this);
     QLabel *boardSizeLabel = new QLabel("Board size", this);
     boardSizeComboBox = new QComboBox(this);
     boardSizeComboBox->addItem("3x3");
@@ -49,6 +50,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     newGameButton->setStyleSheet(buttonStyle);
     saveGameButton->setStyleSheet(buttonStyle);
     loadGameButton->setStyleSheet(buttonStyle);
+    closeGameButton->setStyleSheet(buttonStyle);
 
     QString comboBoxStyle = "QComboBox {"
                             "    background-color: white;"
@@ -82,10 +84,13 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     layout->addWidget(boardSizeLabel, startRow + 3, rightColumn, 1, 1);
     layout->addWidget(boardSizeComboBox, startRow + 4, rightColumn, 1, 1);
     layout->addWidget(statisticsView, startRow + 5, rightColumn, 1, 1);
+    layout->addWidget(closeGameButton, startRow + 6, rightColumn, 1, 1);
 
     layout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding), startRow + 6, rightColumn, -1, 1);
 
     centralWidget->setLayout(layout);
+
+    connect(closeGameButton, &QPushButton::clicked, this, &QMainWindow::close);
 
     connect(saveGameButton, &QPushButton::clicked, [this](){
         saveGame();
