@@ -3,7 +3,6 @@
 
 BoardView::BoardView(const Board &board, QWidget *parent) : QWidget(parent), size(board.getSize()) {
     QGridLayout *layout = new QGridLayout(this);
-    layout->setSpacing(0);
 
     tileViews.resize(size, std::vector<TileView*>(size));
     for (int i = 0; i < size; ++i) {
@@ -13,7 +12,6 @@ BoardView::BoardView(const Board &board, QWidget *parent) : QWidget(parent), siz
             connect(tileViews[i][j], &TileView::clicked, [this, i, j](){ emit tileClicked(i, j); });
         }
     }
-    layout->setSpacing(5);
 }
 
 void BoardView::updateBoard(const Board &board) {

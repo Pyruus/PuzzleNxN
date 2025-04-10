@@ -222,15 +222,14 @@ void MainWindow::updateTime() {
 }
 
 void MainWindow::saveGame() {
-    QString filename = QFileDialog::getSaveFileName(this, "Zapisz stan gry", "", "Stan Gry (*.sav)");
+    QString filename = QFileDialog::getSaveFileName(this, "Save game state", "", "Game State (*.sav)");
     if (!filename.isEmpty()) {
         GameState::save(filename.toStdString(), puzzleModel.getBoard().getSize(), puzzleModel.getBoard(), elapsedTime, puzzleModel.getMoveCount());
-        statusBar()->showMessage("Gra zapisana", 2000);
     }
 }
 
 void MainWindow::loadGame() {
-    QString filename = QFileDialog::getOpenFileName(this, "Wczytaj stan gry", "", "Stan Gry (*.sav)");
+    QString filename = QFileDialog::getOpenFileName(this, "Load game state", "", "Game State (*.sav)");
     if (!filename.isEmpty()) {
         int loadedSize;
         Board loadedBoard(puzzleModel.getBoard().getSize());
@@ -254,9 +253,8 @@ void MainWindow::loadGame() {
             int minutes = (elapsedTime % 3600) / 60;
             int seconds = elapsedTime % 60;
             statisticsView->updateTime(hours, minutes, seconds);
-            statusBar()->showMessage("Gra wczytana", 2000);
         } else {
-            QMessageBox::critical(this, "Błąd wczytywania", "Nie można wczytać stanu gry z pliku.");
+            QMessageBox::critical(this, "Loading error", "Can't load game state from file.");
         }
     }
 }

@@ -18,7 +18,7 @@ void GameState::save(const std::string& filename, int size, const Board& board, 
         file << elapsedTime << std::endl;
         file.close();
     } else {
-        qDebug() << "Nie można otworzyć pliku do zapisu: " << filename.c_str();
+        qDebug() << "Can't open save file: " << filename.c_str();
     }
 }
 
@@ -46,7 +46,7 @@ bool GameState::load(const std::string& filename, int& size, Board& board, int& 
         board = loadedBoard;
         return true;
     } else {
-        qDebug() << "Nie można otworzyć pliku do odczytu: " << filename.c_str();
+        qDebug() << "Can't open load file: " << filename.c_str();
         return false;
     }
 }
