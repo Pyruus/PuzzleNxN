@@ -6,6 +6,8 @@
  * coordinates of a single tile within the sliding puzzle.
  */
 
+#include <Coordinates.h>
+
 #ifndef TILE_H
 #define TILE_H
 
@@ -23,14 +25,9 @@ private:
     int value;
 
     /*!
-     * @brief The current row (X-coordinate) of the tile on the board.
+     * @brief The current position of the tile on the board.
      */
-    int x;
-
-    /*!
-     * @brief The current column (Y-coordinate) of the tile on the board.
-     */
-    int y;
+    Coordinates<int> position;
 
 public:
     /*!
