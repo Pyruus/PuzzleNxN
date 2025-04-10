@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include <qDebug>
 #include <vector>
+#include <fstream>
 
 void GameState::save(const std::string& filename, int size, const Board& board, int elapsedTime, int moveCount) {
     std::ofstream file(filename);
