@@ -56,5 +56,7 @@ private:
 private slots:
     void updateTime();
     void displaySolutions(std::vector<MoveDirection> aStarMoves, std::vector<MoveDirection> idaStarMoves);
+    void saveGame();
+    void loadGame();
 };
 #endif // MAINWINDOW_H

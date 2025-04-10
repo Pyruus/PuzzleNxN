@@ -1,16 +1,16 @@
-#include "../include/TileView.h"
+#include "TileView.h"
 #include <QGraphicsOpacityEffect>
 #include <QGridLayout>
 
-TileView::TileView(const Tile &tile, QWidget *parent) : QWidget(parent) {
+TileView::TileView(const Tile &tile, QWidget *parent, int boardSize) : QWidget(parent) {
     QGridLayout *layout = new QGridLayout(this);
     label = new QLabel(QString::number(tile.getValue()), this);
     label->setAlignment(Qt::AlignCenter);
-    QFont font("Arial", 24, QFont::Bold);
+    QFont font("Arial", 24 * 8. / boardSize, QFont::Bold);
     label->setFont(font);
     layout->addWidget(label, 0, 0);
     setStyleSheet("border: 2px solid black; background-color: lightgreen;");
-    setFixedSize(80, 80);
+    setFixedSize(100. * 8. / boardSize, 100. * 8. / boardSize);
     if (tile.getValue() == 0) {
         setOpacity(0);
     } else {

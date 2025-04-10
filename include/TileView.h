@@ -9,7 +9,7 @@
     Q_OBJECT
 
 public:
-    TileView(const Tile &tile, QWidget *parent = nullptr);
+    TileView(const Tile &tile, QWidget *parent = nullptr, int boardSize = 4);
     void updateTile(const Tile &tile);
     void mousePressEvent(QMouseEvent *event);
 

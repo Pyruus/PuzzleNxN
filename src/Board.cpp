@@ -1,4 +1,4 @@
-#include "../include/Board.h"
+#include "Board.h"
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -128,4 +128,12 @@ bool Board::operator<(const Board& other) const {
         return size < other.size;
     }
     return tiles < other.tiles;
+std::vector<std::vector<Tile>> Board::getTiles() const{
+    return tiles;
+}
+
+void Board::setTileValue(int row, int col, int value) {
+    if (row >= 0 && row < size && col >= 0 && col < size) {
+        tiles[row][col].setValue(value);
+    }
 }

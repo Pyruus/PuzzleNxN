@@ -19,6 +19,8 @@ public:
     bool isSolved() const;
     bool isSolvable() const;
     bool operator<(const Board& other) const;
+    std::vector<std::vector<Tile>> getTiles() const;
+    void setTileValue(int row, int col, int value);
 };
 
 #endif // BOARD_H

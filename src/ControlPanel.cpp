@@ -1,4 +1,4 @@
-#include "../include/ControlPanel.h"
+#include "ControlPanel.h"
 #include <QPushButton>
 #include <QGridLayout>
 

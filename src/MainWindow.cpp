@@ -1,4 +1,8 @@
-#include "../include/MainWindow.h"
+#include "MainWindow.h"
+#include "GameState.h"
+
+#include <QFileDialog>
+#include <QStatusBar>
 
 #include <QThread>
 
@@ -25,23 +29,92 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     statisticsView = new StatisticsView(this);
 
     QPushButton *newGameButton = new QPushButton("New Game", this);
+    QPushButton *saveGameButton = new QPushButton("Save Game", this);
+    QPushButton *loadGameButton = new QPushButton("Load Game", this);
     QLabel *boardSizeLabel = new QLabel("Board size", this);
     boardSizeComboBox = new QComboBox(this);
     boardSizeComboBox->addItem("3x3");
     boardSizeComboBox->addItem("4x4");
     boardSizeComboBox->addItem("5x5");
+    boardSizeComboBox->addItem("6x6");
+    boardSizeComboBox->addItem("7x7");
+    boardSizeComboBox->addItem("8x8");
+    boardSizeComboBox->addItem("9x9");
+    boardSizeComboBox->addItem("10x10");
+    boardSizeComboBox->addItem("15x15");
     boardSizeComboBox->setCurrentText(QString::number(size) + "x" + QString::number(size));
 
-    layout->addWidget(boardView, 0, 0, 1, 1);
-    layout->addWidget(newGameButton, 0, 1, 1, 1);
-    layout->addWidget(boardSizeLabel, 1, 1, 1, 1);
-    layout->addWidget(boardSizeComboBox, 2, 1, 1, 1);
-    layout->addWidget(statisticsView, 3, 1, 1, 1);
+    QString buttonStyle = "QPushButton {"
+                          "    background-color: #4d80e4;"
+                          "    background-image: linear-gradient(to bottom, #6699ff, #4d80e4);"
+                          "    color: white;"
+                          "    border: 1px solid #336699;"
+                          "    border-radius: 8px;"
+                          "    padding: 10px 20px;"
+                          "    font-size: 16px;"
+                          "    cursor: pointer;"
+                          "    width: 150px;"
+                          "}"
+                          "QPushButton:hover {"
+                          "    background-color: #5e99f2;"
+                          "    background-image: linear-gradient(to bottom, #7ab2ff, #5e99f2);"
+                          "    border-color: #29527a; "
+                          "}";
+
+    newGameButton->setStyleSheet(buttonStyle);
+    saveGameButton->setStyleSheet(buttonStyle);
+    loadGameButton->setStyleSheet(buttonStyle);
+
+    QString comboBoxStyle = "QComboBox {"
+                            "    background-color: white;"
+                            "    color: black;"
+                            "    border: 1px solid #c0c0c0;"
+                            "    border-radius: 5px;"
+                            "    padding: 5px 10px;"
+                            "    font-size: 14px;"
+                            "}"
+                            "QComboBox::drop-down {"
+                            "    width: 20px;"
+                            "}"
+                            "QComboBox QAbstractItemView {"
+                            "    border: 1px solid #c0c0c0;"
+                            "    selection-background-color: #4d80e4;"
+                            "    selection-color: white;"
+                            "}";
+
+    boardSizeComboBox->setStyleSheet(comboBoxStyle);
+
+    layout->addWidget(boardView, 0, 0, -1, 1);
+
+    int rightColumn = 1;
+    int startRow = 5;
+
+    layout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding), 0, rightColumn, startRow, 1);
+
+    layout->addWidget(newGameButton, startRow, rightColumn, 1, 1);
+    layout->addWidget(saveGameButton, startRow + 1, rightColumn, 1, 1);
+    layout->addWidget(loadGameButton, startRow + 2, rightColumn, 1, 1);
+    layout->addWidget(boardSizeLabel, startRow + 3, rightColumn, 1, 1);
+    layout->addWidget(boardSizeComboBox, startRow + 4, rightColumn, 1, 1);
+    layout->addWidget(statisticsView, startRow + 5, rightColumn, 1, 1);
+
+    layout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding), startRow + 6, rightColumn, -1, 1);
+
+    centralWidget->setLayout(layout);
+
+    connect(saveGameButton, &QPushButton::clicked, [this](){
+        saveGame();
+    });
+
+    connect(loadGameButton, &QPushButton::clicked, [this](){
+        loadGame();
+    });
 
     connect(newGameButton, &QPushButton::clicked, [this, layout](){
         this->gameFinished = false;
 
-        int newSize = boardSizeComboBox->currentText().left(1).toInt();
+        int xPosition = boardSizeComboBox->currentText().indexOf('x');
+        int newSize = boardSizeComboBox->currentText().left(xPosition).toInt();
 
         puzzleModel.~PuzzleModel();
 
@@ -52,7 +125,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
 
         delete boardView;
         boardView = new BoardView(puzzleModel.getBoard(), this);
-        layout->addWidget(boardView, 0, 0, 1, 1);
+        layout->addWidget(boardView, 0, 0, -1, 1);
 
         connect(boardView, &BoardView::tileClicked, [this](int x, int y) {
             if (gameFinished) {
@@ -198,6 +271,44 @@ void MainWindow::displaySolutions(std::vector<MoveDirection> aStarMoves, std::ve
     solutionsLabel->setAlignment(Qt::AlignLeft);
     dialogLayout->addWidget(solutionsLabel);
     solutionsDialog->setLayout(dialogLayout);
-    solutionsDialog->setModal(false); // Nie blokuj interakcji z głównym oknem
+    solutionsDialog->setModal(false);
     solutionsDialog->show();
+void MainWindow::saveGame() {
+    QString filename = QFileDialog::getSaveFileName(this, "Zapisz stan gry", "", "Stan Gry (*.sav)");
+    if (!filename.isEmpty()) {
+        GameState::save(filename.toStdString(), puzzleModel.getBoard().getSize(), puzzleModel.getBoard(), elapsedTime, puzzleModel.getMoveCount());
+        statusBar()->showMessage("Gra zapisana", 2000);
+    }
+}
+
+void MainWindow::loadGame() {
+    QString filename = QFileDialog::getOpenFileName(this, "Wczytaj stan gry", "", "Stan Gry (*.sav)");
+    if (!filename.isEmpty()) {
+        int loadedSize;
+        Board loadedBoard(puzzleModel.getBoard().getSize());
+        int loadedTime;
+        int loadedMoveCount;
+        if (GameState::load(filename.toStdString(), loadedSize, loadedBoard, loadedTime, loadedMoveCount)) {
+            if (loadedSize != puzzleModel.getBoard().getSize()) {
+                puzzleModel.~PuzzleModel();
+                new (&puzzleModel) PuzzleModel(loadedSize, this);
+                delete boardView;
+                boardView = new BoardView(puzzleModel.getBoard(), this);
+                qobject_cast<QGridLayout*>(centralWidget()->layout())->addWidget(boardView, 0, 0, 1, 1);
+            }
+            puzzleModel.setBoard(loadedBoard);
+            puzzleModel.setMoveCount(loadedMoveCount);
+            elapsedTime = loadedTime;
+            gameFinished = false;
+            boardView->updateBoard(puzzleModel.getBoard());
+            statisticsView->updateMoveCount(puzzleModel.getMoveCount());
+            int hours = elapsedTime / 3600;
+            int minutes = (elapsedTime % 3600) / 60;
+            int seconds = elapsedTime % 60;
+            statisticsView->updateTime(hours, minutes, seconds);
+            statusBar()->showMessage("Gra wczytana", 2000);
+        } else {
+            QMessageBox::critical(this, "Błąd wczytywania", "Nie można wczytać stanu gry z pliku.");
+        }
+    }
 }
