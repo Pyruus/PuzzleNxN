@@ -16,8 +16,6 @@ public:
     int getMoveCount() const;
     void setBoard(const Board& board);
     void setMoveCount(int count);
-
-public slots:
     void moveTile(MoveDirection direction);
     void shuffle();
 

@@ -11,7 +11,6 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     QGridLayout *layout = new QGridLayout(centralWidget);
 
     boardView = new BoardView(puzzleModel.getBoard(), this);
-    controlPanel = new ControlPanel(this);
     statisticsView = new StatisticsView(this);
 
     QPushButton *newGameButton = new QPushButton("New Game", this);
