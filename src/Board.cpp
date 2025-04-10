@@ -35,10 +35,10 @@ bool Board::moveTile(MoveDirection direction) {
 
     int newX = emptyX, newY = emptyY;
     switch (direction) {
-    case MoveDirection::UP: newX++; break;
-    case MoveDirection::DOWN: newX--; break;
-    case MoveDirection::LEFT: newY++; break;
-    case MoveDirection::RIGHT: newY--; break;
+    case MoveDirection::UP: newX--; break;
+    case MoveDirection::DOWN: newX++; break;
+    case MoveDirection::LEFT: newY--; break;
+    case MoveDirection::RIGHT: newY++; break;
     }
 
     if (newX >= 0 && newX < size && newY >= 0 && newY < size) {

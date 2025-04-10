@@ -2,7 +2,7 @@
 #include <QGraphicsOpacityEffect>
 #include <QGridLayout>
 
-TileView::TileView(const Tile &tile, QWidget *parent, int boardSize) : QWidget(parent) {
+TileView::TileView(const Tile &tile, int boardSize, QWidget *parent) : QWidget(parent) {
     QGridLayout *layout = new QGridLayout(this);
     label = new QLabel(QString::number(tile.getValue()), this);
     label->setAlignment(Qt::AlignCenter);

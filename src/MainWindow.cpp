@@ -25,12 +25,12 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     QGridLayout *layout = new QGridLayout(centralWidget);
 
     boardView = new BoardView(puzzleModel.getBoard(), this);
-    controlPanel = new ControlPanel(this);
     statisticsView = new StatisticsView(this);
 
     QPushButton *newGameButton = new QPushButton("New Game", this);
     QPushButton *saveGameButton = new QPushButton("Save Game", this);
     QPushButton *loadGameButton = new QPushButton("Load Game", this);
+    QPushButton *closeGameButton = new QPushButton("Quit", this);
     QLabel *boardSizeLabel = new QLabel("Board size", this);
     boardSizeComboBox = new QComboBox(this);
     boardSizeComboBox->addItem("3x3");
@@ -64,6 +64,7 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     newGameButton->setStyleSheet(buttonStyle);
     saveGameButton->setStyleSheet(buttonStyle);
     loadGameButton->setStyleSheet(buttonStyle);
+    closeGameButton->setStyleSheet(buttonStyle);
 
     QString comboBoxStyle = "QComboBox {"
                             "    background-color: white;"
@@ -97,10 +98,13 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
     layout->addWidget(boardSizeLabel, startRow + 3, rightColumn, 1, 1);
     layout->addWidget(boardSizeComboBox, startRow + 4, rightColumn, 1, 1);
     layout->addWidget(statisticsView, startRow + 5, rightColumn, 1, 1);
+    layout->addWidget(closeGameButton, startRow + 6, rightColumn, 1, 1);
 
     layout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding), startRow + 6, rightColumn, -1, 1);
 
     centralWidget->setLayout(layout);
+
+    connect(closeGameButton, &QPushButton::clicked, this, &QMainWindow::close);
 
     connect(saveGameButton, &QPushButton::clicked, [this](){
         saveGame();
@@ -144,10 +148,10 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
             }
 
             if ((abs(x - emptyX) == 1 && y == emptyY) || (x == emptyX && abs(y - emptyY) == 1)) {
-                if (x > emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
-                else if (x < emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
-                else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
-                else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
+                if (x < emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
+                else if (x > emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
+                else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
+                else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
             }
         });
 
@@ -202,10 +206,10 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         }
 
         if ((abs(x - emptyX) == 1 && y == emptyY) || (x == emptyX && abs(y - emptyY) == 1)) {
-            if (x > emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
-            else if (x < emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
-            else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
-            else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
+            if (x < emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
+            else if (x > emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
+            else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
+            else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
         }
     });
 
@@ -274,15 +278,14 @@ void MainWindow::displaySolutions(std::vector<MoveDirection> aStarMoves, std::ve
     solutionsDialog->setModal(false);
     solutionsDialog->show();
 void MainWindow::saveGame() {
-    QString filename = QFileDialog::getSaveFileName(this, "Zapisz stan gry", "", "Stan Gry (*.sav)");
+    QString filename = QFileDialog::getSaveFileName(this, "Save game state", "", "Game State (*.sav)");
     if (!filename.isEmpty()) {
         GameState::save(filename.toStdString(), puzzleModel.getBoard().getSize(), puzzleModel.getBoard(), elapsedTime, puzzleModel.getMoveCount());
-        statusBar()->showMessage("Gra zapisana", 2000);
     }
 }
 
 void MainWindow::loadGame() {
-    QString filename = QFileDialog::getOpenFileName(this, "Wczytaj stan gry", "", "Stan Gry (*.sav)");
+    QString filename = QFileDialog::getOpenFileName(this, "Load game state", "", "Game State (*.sav)");
     if (!filename.isEmpty()) {
         int loadedSize;
         Board loadedBoard(puzzleModel.getBoard().getSize());
@@ -306,9 +309,8 @@ void MainWindow::loadGame() {
             int minutes = (elapsedTime % 3600) / 60;
             int seconds = elapsedTime % 60;
             statisticsView->updateTime(hours, minutes, seconds);
-            statusBar()->showMessage("Gra wczytana", 2000);
         } else {
-            QMessageBox::critical(this, "Błąd wczytywania", "Nie można wczytać stanu gry z pliku.");
+            QMessageBox::critical(this, "Loading error", "Can't load game state from file.");
         }
     }
 }
