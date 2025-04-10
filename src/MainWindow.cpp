@@ -129,10 +129,10 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
             }
 
             if ((abs(x - emptyX) == 1 && y == emptyY) || (x == emptyX && abs(y - emptyY) == 1)) {
-                if (x > emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
-                else if (x < emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
-                else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
-                else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
+                if (x < emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
+                else if (x > emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
+                else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
+                else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
             }
         });
 
@@ -177,10 +177,10 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         }
 
         if ((abs(x - emptyX) == 1 && y == emptyY) || (x == emptyX && abs(y - emptyY) == 1)) {
-            if (x > emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
-            else if (x < emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
-            else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
-            else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
+            if (x < emptyX) { puzzleModel.moveTile(MoveDirection::UP); }
+            else if (x > emptyX) { puzzleModel.moveTile(MoveDirection::DOWN); }
+            else if (y < emptyY) { puzzleModel.moveTile(MoveDirection::LEFT); }
+            else if (y > emptyY) { puzzleModel.moveTile(MoveDirection::RIGHT); }
         }
     });
 
