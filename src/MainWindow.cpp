@@ -184,8 +184,8 @@ MainWindow::MainWindow(int size, QWidget *parent) : QMainWindow(parent), puzzleM
         connect(worker, &AlgorithmWorker::finished, this, &MainWindow::displaySolutions);
         connect(worker, &AlgorithmWorker::finished, worker, &QObject::deleteLater);
         connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-        //connect(thread, &QThread::started, worker, &AlgorithmWorker::runAStar); // Możesz uruchomić oba sekwencyjnie lub równolegle
-        connect(thread, &QThread::started, worker, &AlgorithmWorker::runIDAStar);
+        connect(thread, &QThread::started, worker, &AlgorithmWorker::runAStar); // Możesz uruchomić oba sekwencyjnie lub równolegle
+        //connect(thread, &QThread::started, worker, &AlgorithmWorker::runIDAStar);
         thread->start();
     });
 
@@ -277,6 +277,7 @@ void MainWindow::displaySolutions(std::vector<MoveDirection> aStarMoves, std::ve
     solutionsDialog->setLayout(dialogLayout);
     solutionsDialog->setModal(false);
     solutionsDialog->show();
+}
 void MainWindow::saveGame() {
     QString filename = QFileDialog::getSaveFileName(this, "Save game state", "", "Game State (*.sav)");
     if (!filename.isEmpty()) {

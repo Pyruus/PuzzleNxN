@@ -52,7 +52,7 @@ std::vector<MoveDirection> AStarSolver::solve(const Board &initialBoard) {
             }
         }
     }
-    return {}; // Brak rozwiązania
+    return {};
 }
 
 int IDAStarSolver::search(IDAStarNode node, int bound, const ManhattanDistance &heuristic, std::vector<MoveDirection> &solution) {
@@ -62,7 +62,7 @@ int IDAStarSolver::search(IDAStarNode node, int bound, const ManhattanDistance &
     }
     if (node.board.isSolved()) {
         solution = node.path;
-        return -1; // Znaleziono rozwiązanie
+        return -1;
     }
     int min = std::numeric_limits<int>::max();
     for (MoveDirection direction : {MoveDirection::UP, MoveDirection::DOWN, MoveDirection::LEFT, MoveDirection::RIGHT}) {

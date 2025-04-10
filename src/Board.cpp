@@ -128,6 +128,7 @@ bool Board::operator<(const Board& other) const {
         return size < other.size;
     }
     return tiles < other.tiles;
+}
 std::vector<std::vector<Tile>> Board::getTiles() const{
     return tiles;
 }
